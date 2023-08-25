@@ -1,7 +1,7 @@
 package com.app.trackme.service;
 
 import com.app.trackme.domain.Track;
-import com.app.trackme.dto.TrackDto;
+import com.app.trackme.dto.request.CreateTrackDTO;
 import com.app.trackme.repository.TrackRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,13 +13,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TrackService {
 
+    private final TrackRecordService trackRecordService;
     private final TrackRepository trackRepository;
 
     @Transactional
-    public Long saveTrack(TrackDto trackDto) {
-        Track track = Track.create(trackDto);
-        Track entity = trackRepository.save(track);
-        return entity.getId();
+    public Long createTrack(CreateTrackDTO dto) {
+        Track track = Track.create(dto);
+        Track trackEntity = trackRepository.save(track);
+        trackRecordService.createTrackRecord(trackEntity, dto.getTrackRecord());
+        return trackEntity.getId();
     }
 
     @Transactional(readOnly = true)

@@ -6,3 +6,8 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
+    defer-datasource-initialization: true
+  sql:
+    init:
+      schema-locations : classpath*:initdata/batch-postgresql.sql
+      mode: always

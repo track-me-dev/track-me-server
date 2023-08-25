@@ -1,11 +1,9 @@
 package com.app.trackme.domain;
 
 import com.app.trackme.repository.TrackRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -26,7 +24,7 @@ class TrackTest {
         Track track = Track.builder()
                 .id(0L)
                 .title("track01")
-                .coordinates(coordinates)
+                .path(coordinates)
                 .build();
 
         trackRepository.save(track);
@@ -35,7 +33,8 @@ class TrackTest {
         Track track1 = tracks.get(0);
 
         assertThat(tracks.size()).isEqualTo(1);
-        assertThat(track1.getCoordinates().get(0).getLatitude()).isEqualTo(37.512583);
-        assertThat(track1.getCoordinates().get(0).getLongitude()).isEqualTo(126.960039);
+        assertThat(track1.getPath().get(0).getLatitude()).isEqualTo(37.512583);
+        assertThat(track1.getPath().get(0).getLongitude()).isEqualTo(126.960039);
     }
+
 }
