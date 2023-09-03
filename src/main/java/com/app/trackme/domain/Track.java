@@ -29,14 +29,11 @@ public class Track {
             joinColumns = @JoinColumn(name = "TRACK_ID")
     )
     private List<Location> path;
-
     private Double distance;
-
     private Double lowestAltitude;
-
     private Double highestAltitude;
-
     private Double averageSlope;
+    private Long rank1stId;
 
     @OneToMany(mappedBy = "track") // (default) lazy loading
     private List<TrackRecord> records;
@@ -48,6 +45,10 @@ public class Track {
                 .distance(dto.getDistance())
                 .records(new ArrayList<>())
                 .build();
+    }
+
+    public void updateRank1st(Long trackRecordId) {
+        this.rank1stId = trackRecordId;
     }
 
     public void setElevationResult(List<ElevationResult> results) {

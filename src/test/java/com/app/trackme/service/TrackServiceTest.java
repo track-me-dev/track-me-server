@@ -1,33 +1,26 @@
-package com.app.trackme.controller;
+package com.app.trackme.service;
 
 import com.app.trackme.domain.Location;
+import com.app.trackme.domain.Track;
 import com.app.trackme.dto.request.CreateTrackDTO;
 import com.app.trackme.dto.request.CreateTrackRecordDTO;
-import com.app.trackme.service.TrackService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
-@AutoConfigureMockMvc
-class TrackControllerTest {
+class TrackServiceTest {
 
-    private final ObjectMapper mapper = new ObjectMapper();
     private Long trackId;
 
-    @Autowired
-    private MockMvc mockMvc;
     @Autowired
     private TrackService trackService;
 
@@ -54,15 +47,11 @@ class TrackControllerTest {
     }
 
     @Test
-    @DisplayName("trackId를 통해 track을 조회할 때 path와 records가 포함되어 있어야 한다.")
-    void must_contain_both_path_and_records_in_a_track() throws Exception {
+    @Transactional
+    @DisplayName("트랙을 처음으로 생성할 때의 기록을 해당 트랙의 랭킹 1위 기록으로 저장한다.")
+    void save_track_record_as_rank_1st() {
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/tracks/{trackId}", trackId))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(trackId))
-                .andExpect(jsonPath("$.title").value("track01"))
-                .andExpect(jsonPath("$.path.length()").value(3))
-                .andExpect(jsonPath("$.distance").value(100.0));
+        Track track = trackService.findTrack(trackId);
+        assertThat(track.getRank1stId()).isEqualTo(1L);
     }
-
 }

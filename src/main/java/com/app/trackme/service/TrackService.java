@@ -21,7 +21,9 @@ public class TrackService {
     public Long createTrack(CreateTrackDTO dto) {
         Track track = Track.create(dto);
         Track trackEntity = trackRepository.save(track);
-        trackRecordService.createTrackRecord(trackEntity, dto.getTrackRecord());
+        Long trackRecordId = trackRecordService.createTrackRecord(trackEntity, dto.getTrackRecord());
+        // 현재 기록은 트랙의 첫 번째 기록이므로 랭킹 1위의 기록으로 저장
+        trackEntity.updateRank1st(trackRecordId);
         return trackEntity.getId();
     }
 
