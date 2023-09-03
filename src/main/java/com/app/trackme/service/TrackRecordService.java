@@ -5,6 +5,8 @@ import com.app.trackme.domain.TrackRecord;
 import com.app.trackme.dto.request.CreateTrackRecordDTO;
 import com.app.trackme.repository.TrackRecordRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,8 +37,8 @@ public class TrackRecordService {
     }
 
     @Transactional(readOnly = true)
-    public List<TrackRecord> findRecordsByTrack(Long trackId) {
-        return trackRecordRepository.findAllByTrack(trackId);
+    public Slice<TrackRecord> findTrackRecords(Long trackId, Pageable pageable) {
+        return trackRecordRepository.findAllByTrackIdOrderByTime(trackId, pageable);
     }
 
     @Transactional(readOnly = true)

@@ -1,7 +1,7 @@
 package com.app.trackme.controller;
 
 import com.app.trackme.dto.TrackResponseDTO;
-import com.app.trackme.dto.TrackRecordDto;
+import com.app.trackme.dto.TrackRecordResponseDTO;
 import com.app.trackme.dto.request.CreateTrackDTO;
 import com.app.trackme.dto.request.CreateTrackRecordDTO;
 import com.app.trackme.service.TrackRecordService;
@@ -10,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,10 +55,10 @@ public class TrackController {
     }
 
     @GetMapping("/{trackId}/records")
-    public ResponseEntity<List<TrackRecordDto>> retrieveAllRecords(@PathVariable Long trackId) {
-        List<TrackRecordDto> trackRecordDTOs = trackRecordService.findRecordsByTrack(trackId).stream()
-                .map(TrackRecordDto::toDto)
-                .toList();
+    public ResponseEntity<Slice<TrackRecordResponseDTO>> retrieveAllRecords(@PathVariable Long trackId,
+                                                                            @PageableDefault(size = 5) Pageable pageable) {
+        Slice<TrackRecordResponseDTO> trackRecordDTOs = trackRecordService.findTrackRecords(trackId, pageable)
+                .map(TrackRecordResponseDTO::toDto);
         return ResponseEntity.ok(trackRecordDTOs);
     }
 

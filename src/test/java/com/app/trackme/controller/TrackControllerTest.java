@@ -1,21 +1,30 @@
 package com.app.trackme.controller;
 
 import com.app.trackme.domain.Location;
+import com.app.trackme.dto.TrackRecordResponseDTO;
 import com.app.trackme.dto.request.CreateTrackDTO;
 import com.app.trackme.dto.request.CreateTrackRecordDTO;
 import com.app.trackme.service.TrackService;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
+import java.util.stream.IntStream;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -33,6 +42,7 @@ class TrackControllerTest {
 
     @BeforeEach
     void init() {
+        // 최초의 주행 트랙 생성
         List<Location> path = List.of(
                 new Location(37.512583, 126.960039, 0.0),
                 new Location(37.512480, 126.960226, 1.0),
@@ -51,6 +61,18 @@ class TrackControllerTest {
                 .trackRecord(trackRecordDTO)
                 .build();
         trackId = trackService.createTrack(trackDTO);
+
+        // 생성된 주행 트랙에 기록 더하기
+        Random random = new Random();
+        IntStream.range(0, 10)
+                .forEach(i -> {
+                    CreateTrackRecordDTO dto = CreateTrackRecordDTO.builder()
+                            .path(path)
+                            .distance(100.0)
+                            .time((double) (random.nextInt(20) + 1))
+                            .build();
+                    trackService.createTrackRecord(trackId, dto);
+                });
     }
 
     @Test
@@ -65,4 +87,18 @@ class TrackControllerTest {
                 .andExpect(jsonPath("$.distance").value(100.0));
     }
 
+    @Test
+    @DisplayName("트랙에 있는 모든 기록을 조회할 때 size=5로 paging하고, 주행 시간에 따라 정렬해서 조회한다.")
+    void retrieve_track_records_with_pagination_and_order_by_time() throws Exception {
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/tracks/{trackId}/records", trackId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content.length()").value(5))
+                .andReturn();
+
+        String json = mvcResult.getResponse().getContentAsString();
+        String content = mapper.readTree(json).get("content").toString();
+        List<TrackRecordResponseDTO> response = mapper.readValue(content, new TypeReference<>(){});
+
+        assertThat(response).isSortedAccordingTo(Comparator.comparingDouble(TrackRecordResponseDTO::getTime));
+    }
 }

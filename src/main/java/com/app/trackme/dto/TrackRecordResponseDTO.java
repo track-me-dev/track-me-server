@@ -1,16 +1,14 @@
 package com.app.trackme.dto;
 
 import com.app.trackme.domain.TrackRecord;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
-public class TrackRecordDto {
+@NoArgsConstructor
+public class TrackRecordResponseDTO {
 
     private Long id;
     private Double distance;
@@ -19,8 +17,8 @@ public class TrackRecordDto {
     private Double highestAltitude;
     private Double averageSlope;
 
-    public static TrackRecordDto toDto(TrackRecord entity) {
-        return TrackRecordDto.builder()
+    public static TrackRecordResponseDTO toDto(TrackRecord entity) {
+        return TrackRecordResponseDTO.builder()
                 .id(entity.getId())
                 .time(entity.getTime())
                 .build();

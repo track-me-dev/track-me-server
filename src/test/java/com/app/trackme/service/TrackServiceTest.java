@@ -2,10 +2,8 @@ package com.app.trackme.service;
 
 import com.app.trackme.domain.Location;
 import com.app.trackme.domain.Track;
-import com.app.trackme.domain.TrackRecord;
 import com.app.trackme.dto.request.CreateTrackDTO;
 import com.app.trackme.dto.request.CreateTrackRecordDTO;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 class TrackServiceTest {
