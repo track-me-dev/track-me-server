@@ -2,6 +2,7 @@ package com.app.trackme.service;
 
 import com.app.trackme.domain.Track;
 import com.app.trackme.dto.request.CreateTrackDTO;
+import com.app.trackme.dto.request.CreateTrackRecordDTO;
 import com.app.trackme.repository.TrackRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,5 +34,11 @@ public class TrackService {
     public Track findTrack(Long trackId) {
         return trackRepository.findById(trackId)
                 .orElseThrow();
+    }
+
+    @Transactional
+    public void createRaceRecord(Long trackId, CreateTrackRecordDTO dto) {
+        Track track = findTrack(trackId);
+        trackRecordService.createTrackRecord(track, dto);
     }
 }

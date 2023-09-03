@@ -4,6 +4,7 @@ import com.app.trackme.repository.TrackRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,10 +17,11 @@ class TrackTest {
     TrackRepository trackRepository;
 
     @Test
+    @Transactional
     void test01() {
 
-        List<Coordinate> coordinates = List.of(
-                new Coordinate(37.512583, 126.960039)
+        List<Location> coordinates = List.of(
+                new Location(37.512583, 126.960039, 0D)
         );
         Track track = Track.builder()
                 .id(0L)

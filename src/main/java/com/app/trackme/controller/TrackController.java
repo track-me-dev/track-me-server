@@ -3,6 +3,7 @@ package com.app.trackme.controller;
 import com.app.trackme.dto.TrackResponseDTO;
 import com.app.trackme.dto.TrackRecordDto;
 import com.app.trackme.dto.request.CreateTrackDTO;
+import com.app.trackme.dto.request.CreateTrackRecordDTO;
 import com.app.trackme.service.TrackRecordService;
 import com.app.trackme.service.TrackService;
 import lombok.RequiredArgsConstructor;
@@ -56,5 +57,10 @@ public class TrackController {
                 .map(TrackRecordDto::toDto)
                 .toList();
         return ResponseEntity.ok(trackRecordDTOs);
+    }
+
+    @PostMapping("/{trackId}/records")
+    public void createRecordOfTrack(@PathVariable Long trackId, @RequestBody CreateTrackRecordDTO dto) {
+        trackService.createRaceRecord(trackId, dto);
     }
 }

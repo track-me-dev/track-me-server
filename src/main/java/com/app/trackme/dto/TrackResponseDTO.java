@@ -1,6 +1,6 @@
 package com.app.trackme.dto;
 
-import com.app.trackme.domain.Coordinate;
+import com.app.trackme.domain.Location;
 import com.app.trackme.domain.Track;
 import lombok.*;
 
@@ -14,7 +14,7 @@ public class TrackResponseDTO {
 
     private Long id;
     private String title;
-    private List<Coordinate> path;
+    private List<Location> path;
     private Double distance;
     private Double averageSlope;
     private Double lowestAltitude;

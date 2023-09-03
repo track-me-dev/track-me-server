@@ -1,6 +1,6 @@
 package com.app.trackme.batch;
 
-import com.app.trackme.domain.Coordinate;
+import com.app.trackme.domain.Location;
 import com.app.trackme.domain.Track;
 import com.app.trackme.repository.TrackRepository;
 import org.junit.jupiter.api.Test;
@@ -24,10 +24,10 @@ class BatchJobTest {
 
     @Test
     void job01() throws Exception {
-        List<Coordinate> coordinates = List.of(
-                new Coordinate(37.512583, 126.960039),
-                new Coordinate(37.512070, 126.960971),
-                new Coordinate(37.511660, 126.961716)
+        List<Location> coordinates = List.of(
+                new Location(37.512583, 126.960039, 0D),
+                new Location(37.512070, 126.960971, 0D),
+                new Location(37.511660, 126.961716, 0D)
         );
         Track track = Track.builder()
                 .id(0L)

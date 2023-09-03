@@ -39,4 +39,5 @@ public class TrackRecordService {
     public List<TrackRecord> findRecordsByTrack(Long trackId) {
         return trackRecordRepository.findAllByTrack(trackId);
     }
+
 }

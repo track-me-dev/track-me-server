@@ -1,6 +1,9 @@
 package com.app.trackme.dto.request;
 
+import com.app.trackme.domain.Location;
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -9,6 +12,8 @@ import lombok.*;
 @NoArgsConstructor
 public class CreateTrackRecordDTO {
 
+    private List<Location> path;
+    private Double distance;
     private Double time;
 
 }

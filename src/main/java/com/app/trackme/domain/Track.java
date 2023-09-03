@@ -23,12 +23,12 @@ public class Track {
 
     private String title;
 
-    @ElementCollection(fetch = FetchType.EAGER) // TODO : LAZY로 수정 예정
+    @ElementCollection // (default) lazy loading
     @CollectionTable(
-            name = "coordinate",
+            name = "location",
             joinColumns = @JoinColumn(name = "TRACK_ID")
     )
-    private List<Coordinate> path;
+    private List<Location> path;
 
     private Double distance;
 
@@ -38,7 +38,7 @@ public class Track {
 
     private Double averageSlope;
 
-    @OneToMany(mappedBy = "track")
+    @OneToMany(mappedBy = "track") // (default) lazy loading
     private List<TrackRecord> records;
 
     public static Track create(CreateTrackDTO dto) {
