@@ -61,6 +61,6 @@ public class TrackController {
 
     @PostMapping("/{trackId}/records")
     public void createRecordOfTrack(@PathVariable Long trackId, @RequestBody CreateTrackRecordDTO dto) {
-        trackService.createRaceRecord(trackId, dto);
+        trackService.createTrackRecord(trackId, dto);
     }
 }

@@ -2,7 +2,6 @@ package com.app.trackme.service;
 
 import com.app.trackme.domain.Track;
 import com.app.trackme.domain.TrackRecord;
-import com.app.trackme.dto.TrackRecordDto;
 import com.app.trackme.dto.request.CreateTrackRecordDTO;
 import com.app.trackme.repository.TrackRecordRepository;
 import lombok.RequiredArgsConstructor;
@@ -40,4 +39,8 @@ public class TrackRecordService {
         return trackRecordRepository.findAllByTrack(trackId);
     }
 
+    @Transactional(readOnly = true)
+    public TrackRecord findRank1stRecord(Long trackId) {
+        return trackRecordRepository.findRecordsOrderByTime(trackId).get(0);
+    }
 }
