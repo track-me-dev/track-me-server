@@ -4,6 +4,8 @@ import com.app.trackme.domain.Location;
 import com.app.trackme.domain.Track;
 import com.app.trackme.dto.request.CreateTrackDTO;
 import com.app.trackme.dto.request.CreateTrackRecordDTO;
+import com.app.trackme.utils.TestUtils;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,6 +24,8 @@ class TrackServiceTest {
 
     @Autowired
     private TrackService trackService;
+    @Autowired
+    private TestUtils testUtils;
 
     @BeforeEach
     void init() {
@@ -45,12 +49,17 @@ class TrackServiceTest {
         trackId = trackService.createTrack(trackDTO);
     }
 
+    @AfterEach
+    void rollback() {
+        testUtils.rollback();
+    }
+
     @Test
     @Transactional
     @DisplayName("트랙을 처음으로 생성할 때의 기록을 해당 트랙의 랭킹 1위 기록으로 저장한다.")
     void save_track_record_as_rank_1st() {
         Track track = trackService.findTrack(trackId);
-        assertThat(track.getRank1stId()).isEqualTo(1L);
+        assertThat(track.getRank1stId()).isEqualTo(trackId);
     }
 
     @Test

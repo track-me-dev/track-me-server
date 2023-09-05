@@ -21,8 +21,8 @@ public class TrackRecordService {
     @Transactional
     public Long createTrackRecord(Track track, CreateTrackRecordDTO dto) {
         TrackRecord trackRecord = TrackRecord.create(track, dto);
-        TrackRecord entity = trackRecordRepository.save(trackRecord);
-        return entity.getId();
+        trackRecord = trackRecordRepository.save(trackRecord);
+        return trackRecord.getId();
     }
 
     @Transactional(readOnly = true)

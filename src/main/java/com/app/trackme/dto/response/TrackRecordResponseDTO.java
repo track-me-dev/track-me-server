@@ -1,4 +1,4 @@
-package com.app.trackme.dto;
+package com.app.trackme.dto.response;
 
 import com.app.trackme.domain.TrackRecord;
 import lombok.*;
@@ -13,14 +13,11 @@ public class TrackRecordResponseDTO {
     private Long id;
     private Double distance;
     private Double time;
-    private Double lowestAltitude;
-    private Double highestAltitude;
-    private Double averageSlope;
 
-    public static TrackRecordResponseDTO toDto(TrackRecord entity) {
+    public static TrackRecordResponseDTO toDto(TrackRecord trackRecord) {
         return TrackRecordResponseDTO.builder()
-                .id(entity.getId())
-                .time(entity.getTime())
+                .id(trackRecord.getId())
+                .time(trackRecord.getTime())
                 .build();
     }
 

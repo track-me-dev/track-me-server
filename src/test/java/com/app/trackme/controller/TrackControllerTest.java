@@ -1,20 +1,20 @@
 package com.app.trackme.controller;
 
 import com.app.trackme.domain.Location;
-import com.app.trackme.dto.TrackRecordResponseDTO;
 import com.app.trackme.dto.request.CreateTrackDTO;
 import com.app.trackme.dto.request.CreateTrackRecordDTO;
+import com.app.trackme.dto.response.TrackRecordResponseDTO;
 import com.app.trackme.service.TrackService;
+import com.app.trackme.utils.TestUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -39,6 +39,8 @@ class TrackControllerTest {
     private MockMvc mockMvc;
     @Autowired
     private TrackService trackService;
+    @Autowired
+    private TestUtils testUtils;
 
     @BeforeEach
     void init() {
@@ -75,16 +77,19 @@ class TrackControllerTest {
                 });
     }
 
+    @AfterEach
+    void rollback() {
+        testUtils.rollback();
+    }
+
     @Test
     @DisplayName("trackId를 통해 track을 조회할 때 path와 records가 포함되어 있어야 한다.")
     void must_contain_both_path_and_records_in_a_track() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders.get("/tracks/{trackId}", trackId))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(trackId))
-                .andExpect(jsonPath("$.title").value("track01"))
                 .andExpect(jsonPath("$.path.length()").value(3))
-                .andExpect(jsonPath("$.distance").value(100.0));
+                .andExpect(jsonPath("$.records.length()").value(11));
     }
 
     @Test

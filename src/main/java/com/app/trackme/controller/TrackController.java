@@ -1,7 +1,8 @@
 package com.app.trackme.controller;
 
-import com.app.trackme.dto.TrackResponseDTO;
-import com.app.trackme.dto.TrackRecordResponseDTO;
+import com.app.trackme.dto.response.CoreTrackResponseDTO;
+import com.app.trackme.dto.response.SimpleTrackResponseDTO;
+import com.app.trackme.dto.response.TrackRecordResponseDTO;
 import com.app.trackme.dto.request.CreateTrackDTO;
 import com.app.trackme.dto.request.CreateTrackRecordDTO;
 import com.app.trackme.service.TrackRecordService;
@@ -31,27 +32,27 @@ public class TrackController {
     private final JobLauncher jobLauncher;
 
     @PostMapping
-    public ResponseEntity<TrackResponseDTO> createTrack(@RequestBody CreateTrackDTO dto) {
+    public ResponseEntity<SimpleTrackResponseDTO> createTrack(@RequestBody CreateTrackDTO dto) {
         Long trackId = trackService.createTrack(dto);
         try {
             jobLauncher.run(job, new JobParameters());
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return ResponseEntity.ok(TrackResponseDTO.toDto(trackService.findTrack(trackId)));
+        return ResponseEntity.ok(SimpleTrackResponseDTO.toDto(trackService.findTrack(trackId)));
     }
 
     @GetMapping
-    public ResponseEntity<List<TrackResponseDTO>> retrieveAllTracks() {
-        List<TrackResponseDTO> trackDTOs = trackService.findAllTracks().stream()
-                .map(TrackResponseDTO::toDto)
+    public ResponseEntity<List<SimpleTrackResponseDTO>> retrieveAllTracks() {
+        List<SimpleTrackResponseDTO> trackDTOs = trackService.findAllTracks().stream()
+                .map(SimpleTrackResponseDTO::toDto)
                 .toList();
         return ResponseEntity.ok(trackDTOs);
     }
 
     @GetMapping("/{trackId}")
-    public ResponseEntity<TrackResponseDTO> retrieveTrack(@PathVariable Long trackId) {
-        return ResponseEntity.ok(TrackResponseDTO.toDto(trackService.findTrack(trackId)));
+    public ResponseEntity<CoreTrackResponseDTO> retrieveTrack(@PathVariable Long trackId) {
+        return ResponseEntity.ok(CoreTrackResponseDTO.toDto(trackService.findTrack(trackId)));
     }
 
     @GetMapping("/{trackId}/records")

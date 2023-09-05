@@ -1,30 +1,26 @@
-package com.app.trackme.dto;
+package com.app.trackme.dto.response;
 
-import com.app.trackme.domain.Location;
 import com.app.trackme.domain.Track;
 import lombok.*;
-
-import java.util.List;
 
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
-public class TrackResponseDTO {
+public class SimpleTrackResponseDTO {
 
     private Long id;
     private String title;
-    private List<Location> path;
     private Double distance;
     private Double averageSlope;
     private Double lowestAltitude;
     private Double highestAltitude;
 
-    public static TrackResponseDTO toDto(Track entity) {
-        return TrackResponseDTO.builder()
+    public static SimpleTrackResponseDTO toDto(Track entity) {
+        return SimpleTrackResponseDTO.builder()
                 .id(entity.getId())
                 .title(entity.getTitle())
-                .path(entity.getPath())
                 .distance(entity.getDistance())
                 .averageSlope(entity.getAverageSlope())
                 .lowestAltitude(entity.getLowestAltitude())

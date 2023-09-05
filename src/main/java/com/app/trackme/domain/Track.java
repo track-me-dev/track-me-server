@@ -25,7 +25,7 @@ public class Track {
 
     @ElementCollection // (default) lazy loading
     @CollectionTable(
-            name = "location",
+            name = "LOCATION_FOR_TRACK",
             joinColumns = @JoinColumn(name = "TRACK_ID")
     )
     private List<Location> path;
