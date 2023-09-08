@@ -17,6 +17,7 @@ public class TrackRecordResponseDTO {
     public static TrackRecordResponseDTO toDto(TrackRecord trackRecord) {
         return TrackRecordResponseDTO.builder()
                 .id(trackRecord.getId())
+                .distance(trackRecord.getDistance())
                 .time(trackRecord.getTime())
                 .build();
     }

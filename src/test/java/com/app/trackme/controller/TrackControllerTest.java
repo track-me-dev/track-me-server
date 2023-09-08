@@ -83,13 +83,12 @@ class TrackControllerTest {
     }
 
     @Test
-    @DisplayName("trackId를 통해 track을 조회할 때 path와 records가 포함되어 있어야 한다.")
+    @DisplayName("trackId를 통해 track을 조회할 때 path가 포함되어 있어야 한다.")
     void must_contain_both_path_and_records_in_a_track() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders.get("/tracks/{trackId}", trackId))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.path.length()").value(3))
-                .andExpect(jsonPath("$.records.length()").value(11));
+                .andExpect(jsonPath("$.path.length()").value(3));
     }
 
     @Test
@@ -102,8 +101,19 @@ class TrackControllerTest {
 
         String json = mvcResult.getResponse().getContentAsString();
         String content = mapper.readTree(json).get("content").toString();
-        List<TrackRecordResponseDTO> response = mapper.readValue(content, new TypeReference<>(){});
+        List<TrackRecordResponseDTO> response = mapper.readValue(content, new TypeReference<>() {
+        });
 
         assertThat(response).isSortedAccordingTo(Comparator.comparingDouble(TrackRecordResponseDTO::getTime));
+    }
+
+    @Test
+    @DisplayName("트랙에 있는 기록을 조회할 때 마지막 페이지로 조회하면 남은 1개의 데이터만 조회된다.")
+    void retrieve_the_last_record_with_last_page() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/tracks/{trackId}/records", trackId)
+                        .param("page", "2"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content.length()").value(1))
+                .andReturn();
     }
 }

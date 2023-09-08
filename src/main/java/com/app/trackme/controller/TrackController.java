@@ -1,6 +1,8 @@
 package com.app.trackme.controller;
 
-import com.app.trackme.dto.response.CoreTrackResponseDTO;
+import com.app.trackme.domain.Track;
+import com.app.trackme.domain.TrackRecord;
+import com.app.trackme.dto.response.TrackViewResponseDTO;
 import com.app.trackme.dto.response.SimpleTrackResponseDTO;
 import com.app.trackme.dto.response.TrackRecordResponseDTO;
 import com.app.trackme.dto.request.CreateTrackDTO;
@@ -51,8 +53,10 @@ public class TrackController {
     }
 
     @GetMapping("/{trackId}")
-    public ResponseEntity<CoreTrackResponseDTO> retrieveTrack(@PathVariable Long trackId) {
-        return ResponseEntity.ok(CoreTrackResponseDTO.toDto(trackService.findTrack(trackId)));
+    public ResponseEntity<TrackViewResponseDTO> retrieveTrack(@PathVariable Long trackId) {
+        Track track = trackService.findTrack(trackId);
+        TrackRecord rank1stRecord = trackRecordService.findRank1stRecord(track.getId());
+        return ResponseEntity.ok(TrackViewResponseDTO.toDto(track, rank1stRecord));
     }
 
     @GetMapping("/{trackId}/records")
