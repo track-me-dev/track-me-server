@@ -16,4 +16,5 @@ public class CreateTrackDTO {
     private List<Location> path;
     private Double distance;
     private CreateTrackRecordDTO trackRecord;
+    private String createdBy;
 }

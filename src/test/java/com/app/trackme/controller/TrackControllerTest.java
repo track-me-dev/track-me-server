@@ -113,7 +113,6 @@ class TrackControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/tracks/{trackId}/records", trackId)
                         .param("page", "2"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content.length()").value(1))
-                .andReturn();
+                .andExpect(jsonPath("$.content.length()").value(1));
     }
 }

@@ -34,6 +34,7 @@ public class Track {
     private Double highestAltitude;
     private Double averageSlope;
     private Long rank1stId;
+    private String createdBy;
 
     @OneToMany(mappedBy = "track") // (default) lazy loading
     private List<TrackRecord> records;
@@ -44,6 +45,7 @@ public class Track {
                 .path(dto.getPath())
                 .distance(dto.getDistance())
                 .records(new ArrayList<>())
+                .createdBy(dto.getCreatedBy())
                 .build();
     }
 
