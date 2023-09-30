@@ -1,5 +1,6 @@
 package com.app.trackme.controller;
 
+import com.app.trackme.client.TrackMeUserClient;
 import com.app.trackme.domain.Track;
 import com.app.trackme.domain.TrackRecord;
 import com.app.trackme.dto.response.TrackViewResponseDTO;
@@ -28,6 +29,7 @@ public class TrackController {
 
     private final TrackService trackService;
     private final TrackRecordService trackRecordService;
+    private final TrackMeUserClient userClient;
 
     // TODO: test용 삭제
     private final Job job;
@@ -35,6 +37,9 @@ public class TrackController {
 
     @PostMapping
     public ResponseEntity<SimpleTrackResponseDTO> createTrack(@RequestBody CreateTrackDTO dto) {
+        String username = userClient.getUsername();
+        dto.setCreatedBy(username);
+        dto.getTrackRecord().setUsername(username);
         Long trackId = trackService.createTrack(dto);
         try {
             jobLauncher.run(job, new JobParameters());
@@ -69,6 +74,8 @@ public class TrackController {
 
     @PostMapping("/{trackId}/records")
     public void createRecordOfTrack(@PathVariable Long trackId, @RequestBody CreateTrackRecordDTO dto) {
+        String username = userClient.getUsername();
+        dto.setUsername(username);
         trackService.createTrackRecord(trackId, dto);
     }
 }

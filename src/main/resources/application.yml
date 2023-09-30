@@ -1,6 +1,8 @@
 server:
   port: 0
 eureka:
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
   client:
     register-with-eureka: true
     fetch-registry: true
@@ -9,6 +11,11 @@ eureka:
 spring:
   application:
     name: trackme-core
+#  config:
+#    import: optional:configserver:http://127.0.0.1:8888
+#  cloud:
+#    config:
+#      name: trackme-config
   datasource:
     url: jdbc:postgresql://localhost:5432/trackme
     username: postgres

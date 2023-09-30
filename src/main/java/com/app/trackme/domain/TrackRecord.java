@@ -21,6 +21,7 @@ public class TrackRecord {
     private Long id;
     private Double time;
     private Double distance;
+    private String username;
 
     @ElementCollection
     @CollectionTable(
@@ -38,6 +39,7 @@ public class TrackRecord {
         TrackRecord trackRecord = TrackRecord.builder()
                 .time(dto.getTime())
                 .distance(dto.getDistance())
+                .username(dto.getUsername())
                 .path(dto.getPath())
                 .build();
         trackRecord.setTrack(track);
