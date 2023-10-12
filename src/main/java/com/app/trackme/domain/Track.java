@@ -2,6 +2,8 @@ package com.app.trackme.domain;
 
 import com.app.trackme.batch.ElevationResult;
 import com.app.trackme.dto.request.CreateTrackDTO;
+import com.app.trackme.utils.GeoUtils;
+import com.app.trackme.utils.PathUtils;
 import lombok.*;
 
 import javax.persistence.*;
@@ -23,12 +25,7 @@ public class Track {
 
     private String title;
 
-    @ElementCollection // (default) lazy loading
-    @CollectionTable(
-            name = "LOCATION_FOR_TRACK",
-            joinColumns = @JoinColumn(name = "TRACK_ID")
-    )
-    private List<Location> path;
+    @Lob private String encodedPath;
     private Double distance;
     private Double lowestAltitude;
     private Double highestAltitude;
@@ -42,7 +39,7 @@ public class Track {
     public static Track create(CreateTrackDTO dto) {
         return Track.builder()
                 .title(dto.getTitle())
-                .path(dto.getPath())
+                .encodedPath(PathUtils.encode(dto.getPath()))
                 .distance(dto.getDistance())
                 .records(new ArrayList<>())
                 .createdBy(dto.getCreatedBy())
@@ -61,28 +58,13 @@ public class Track {
                 .mapToDouble(ElevationResult::getElevation)
                 .max().getAsDouble();
         double sumSlopes = IntStream.range(1, results.size())
-                .mapToDouble(i ->
-                        (results.get(i).getElevation() - results.get(i - 1).getElevation())
-                                / calculateDistance(results.get(i).getLocation(), results.get(i - 1).getLocation()))
+                .mapToDouble(i -> {
+                    double d = GeoUtils.calculateDistance(results.get(i).getLocation(), results.get(i - 1).getLocation());
+                    if (d == 0D) return 0;
+                    return (results.get(i).getElevation() - results.get(i - 1).getElevation()) / d;
+                })
                 .sum();
         this.averageSlope = sumSlopes / (results.size() - 1);
     }
 
-
-    // TODO: 클래스 분리
-    private final int EARTH_RADIUS = 6371; // Earth's radius in kilometers
-
-    public double calculateDistance(ElevationResult.Location coord1, ElevationResult.Location coord2) {
-        double dLat = Math.toRadians(coord2.getLat() - coord1.getLat());
-        double dLon = Math.toRadians(coord2.getLng() - coord1.getLng());
-
-        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
-                + Math.cos(Math.toRadians(coord1.getLat()))
-                * Math.cos(Math.toRadians(coord2.getLat()))
-                * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-        return EARTH_RADIUS * c * 1000;
-    }
 }
