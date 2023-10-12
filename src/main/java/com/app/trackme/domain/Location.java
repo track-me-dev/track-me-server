@@ -19,5 +19,4 @@ public class Location {
 
     private Double latitude;
     private Double longitude;
-    private Double elapsedTime; // Track.path 에서 first location 을 elapsedTime = 0 으로 설정
 }

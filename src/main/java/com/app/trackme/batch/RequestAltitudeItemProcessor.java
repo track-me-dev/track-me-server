@@ -1,7 +1,9 @@
 package com.app.trackme.batch;
 
 import com.app.trackme.authkey.ApiKey;
+import com.app.trackme.domain.Location;
 import com.app.trackme.domain.Track;
+import com.app.trackme.utils.PathUtils;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -21,7 +23,8 @@ public class RequestAltitudeItemProcessor implements ItemProcessor<Track, Track>
     @Override
     public Track process(Track track) {
         // TODO: locations 파라미터 (위도,경도) 512개까지 제한
-        String locationsParam = track.getPath().stream()
+        List<Location> locations = PathUtils.decode(track.getEncodedPath());
+        String locationsParam = locations.stream()
                 .map(coord -> coord.getLatitude() + "," + coord.getLongitude())
                 .collect(Collectors.joining("|"));
         String requestUrl = UriComponentsBuilder.fromUriString(API_URL)

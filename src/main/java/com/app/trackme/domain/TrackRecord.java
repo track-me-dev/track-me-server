@@ -1,12 +1,12 @@
 package com.app.trackme.domain;
 
 import com.app.trackme.dto.request.CreateTrackRecordDTO;
+import com.app.trackme.utils.PathUtils;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Getter
@@ -22,13 +22,7 @@ public class TrackRecord {
     private Double time;
     private Double distance;
     private String username;
-
-    @ElementCollection
-    @CollectionTable(
-            name = "LOCATION_FOR_TRACK_RECORD",
-            joinColumns = @JoinColumn(name = "TRACK_RECORD_ID")
-    )
-    private List<Location> path;
+    private String encodedPath;
 
     @ManyToOne
     @JoinColumn(name = "TRACK_ID")
@@ -40,7 +34,7 @@ public class TrackRecord {
                 .time(dto.getTime())
                 .distance(dto.getDistance())
                 .username(dto.getUsername())
-                .path(dto.getPath())
+                .encodedPath(PathUtils.encode(dto.getPath()))
                 .build();
         trackRecord.setTrack(track);
         return trackRecord;

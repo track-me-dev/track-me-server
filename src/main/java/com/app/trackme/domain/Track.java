@@ -2,6 +2,7 @@ package com.app.trackme.domain;
 
 import com.app.trackme.batch.ElevationResult;
 import com.app.trackme.dto.request.CreateTrackDTO;
+import com.app.trackme.utils.PathUtils;
 import lombok.*;
 
 import javax.persistence.*;
@@ -23,12 +24,7 @@ public class Track {
 
     private String title;
 
-    @ElementCollection // (default) lazy loading
-    @CollectionTable(
-            name = "LOCATION_FOR_TRACK",
-            joinColumns = @JoinColumn(name = "TRACK_ID")
-    )
-    private List<Location> path;
+    private String encodedPath;
     private Double distance;
     private Double lowestAltitude;
     private Double highestAltitude;
@@ -42,7 +38,7 @@ public class Track {
     public static Track create(CreateTrackDTO dto) {
         return Track.builder()
                 .title(dto.getTitle())
-                .path(dto.getPath())
+                .encodedPath(PathUtils.encode(dto.getPath()))
                 .distance(dto.getDistance())
                 .records(new ArrayList<>())
                 .createdBy(dto.getCreatedBy())
@@ -61,9 +57,11 @@ public class Track {
                 .mapToDouble(ElevationResult::getElevation)
                 .max().getAsDouble();
         double sumSlopes = IntStream.range(1, results.size())
-                .mapToDouble(i ->
-                        (results.get(i).getElevation() - results.get(i - 1).getElevation())
-                                / calculateDistance(results.get(i).getLocation(), results.get(i - 1).getLocation()))
+                .mapToDouble(i -> {
+                    double d = calculateDistance(results.get(i).getLocation(), results.get(i - 1).getLocation());
+                    if (d == 0D) return 0;
+                    return (results.get(i).getElevation() - results.get(i - 1).getElevation()) / d;
+                })
                 .sum();
         this.averageSlope = sumSlopes / (results.size() - 1);
     }

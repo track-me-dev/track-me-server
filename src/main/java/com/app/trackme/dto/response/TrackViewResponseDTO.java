@@ -3,6 +3,7 @@ package com.app.trackme.dto.response;
 import com.app.trackme.domain.Location;
 import com.app.trackme.domain.Track;
 import com.app.trackme.domain.TrackRecord;
+import com.app.trackme.utils.PathUtils;
 import lombok.*;
 
 import java.util.List;
@@ -33,7 +34,7 @@ public class TrackViewResponseDTO {
                 .lowestAltitude(track.getLowestAltitude())
                 .highestAltitude(track.getHighestAltitude())
                 .rank1stTime(rank1stRecord.getTime())
-                .path(track.getPath())
+                .path(PathUtils.decode(track.getEncodedPath()))
                 .build();
     }
 }
