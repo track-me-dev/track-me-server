@@ -22,7 +22,7 @@ public class TrackRecord {
     private Double time;
     private Double distance;
     private String username;
-    private String encodedPath;
+    @Lob private String encodedPath;
 
     @ManyToOne
     @JoinColumn(name = "TRACK_ID")
